@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Flexbox Card Tutorial</title>
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/index2.css' %}">
+
+  </head>
+
+
+
+<script type=text/javascript>
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+
+  // if (ev.target.childNodes.length > 0){
+  if (ev.target.hasChildNodes()){  
+    alert(ev.target.childNodes.length);
+  }
+  else
+  {
+alert(ev.target.childNodes.length);
+     ev.preventDefault();
+     var data = ev.dataTransfer.getData("text");
+     var nodeCopy = document.getElementById(data).cloneNode(true);
+     nodeCopy.id = "newId"; /* We cannot use the same ID */
+     ev.target.appendChild(nodeCopy);
+     
+     var idDraged = ev.dataTransfer.getData("text");
+     var idHost = ev.target.id;
+
+     TransferToFlask(idDraged,idHost);
+  }      
+
+}
+
+
+function TransferToFlask(ed,eb){
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/result');
+      xhr.onload = function(){
+        var data = this.responseText;
+        console.log(data)
+      }
+      var params ="drg="+ed+"&drp="+eb;//cancatenation
+      xhr.send(params);
+
+}
+
+function GetDateTime() {
+    var today = new Date();
+    alert(today.getDate());
+    document.getElementById('total').innerHTML = today.getDate();
+}
+
+
+</script>
+
+  <body>
+    <table>
+      <tr>
+      <td width="15%">
+      {% for rou in timetracking %}
+      <div class="row" id={{forloop.counter}}  draggable="true" ondragstart="drag(event)" >
+        <div class="card" style="border-color: #2b2b2b">
+          <div class="card-header" style="background-color: #2b2b2b">{{rou.nom}}</div>
+          <div class="card-main" >
+            <div class="main-description" style="color: #2b2b2b">{{rou.numero}}</div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      </td>
+
+ 
+     <td td width="65%">
+        <div class="container">
+
+
+          <div class="row">
+            <div  class="divv1">
+              Semaine 50
+            </div>
+
+            <div class="divv1"> <h3> Lundi </h3> </div>
+            <div class="divv1"> <h3> Mardi </h3></div>
+            <div class="divv1"><h3> Mercredi </h3> </div>
+            <div class="divv1"> <h3> Jeudi </h3></div>
+            <div class="divv1"> <h3> Vendredi </h3></div>
+            <div class="divv1"> <h3> Samedi </h3></div>
+            <div class="divv1"> <h3> Dimanche</h3></div>
+
+          </div>
+
+
+
+          {% for i in "x"|ljust:"8" %}      
+          <div class="row">
+            <div class="divv1" > <h3> plage {{loop.index}}  </h1> </div>
+            <div class="divv1" id=1{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="divv1" id=2{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="divv1" id=3{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="divv1" id=4{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="divv1" id=5{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="divv1" id=6{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="divv1" id=7{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+          </div>
+          {% endfor %}
+        </div>
+        </td>
+        </tr>
+      </table>
+
+<a href="#" class="previous">&laquo; Previous</a>
+<a href="#" class="next">Next &raquo;</a>
+
+<a href="#" class="previous round">&#8249;</a>
+<a href="#" class="next round">&#8250;</a>
+
+
+
+
+  </body>
+</html>
