@@ -18,18 +18,11 @@ class Project(models.Model):
 	def __str__(self):
 		return f" project name {self.nom} - number {self.numero}"
 
-class Affectation(models.Model):
-	id_user = models.ForeignKey(User, on_delete = models.CASCADE)
-	id_project = models.ForeignKey(Project, on_delete = models.CASCADE, related_name = "affected_projects")
-
-	def __str__(self):
-		return f" project number {self.id_project} - affected to {self.id_user}"
-
 class timetracking(models.Model):
 	id_seance = models.IntegerField()
 	id_week = models.IntegerField()
 	id_year = models.IntegerField()
-	fk_id_user = models.ForeignKey(User, on_delete = models.CASCADE)
+	fk_id_user = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "timetracked_projects")
 	fk_id_project = models.ForeignKey(Project, on_delete = models.CASCADE)
 
 	def __str__(self):

@@ -4,11 +4,13 @@
     <meta charset="utf-8">
     <title>Flexbox Card Tutorial</title>
 
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
 
-<link rel="stylesheet" type="text/css" href="{% static 'css/index2.css' %}">
-
+      {% load static %}
+      <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+      <link rel="stylesheet" type="text/css" href="{% static 'css/index2.css' %}">
+      <link rel="stylesheet" type="text/css" href="{% static 'css/index2.css' %}">
+      <link rel="stylesheet" type="text/css" href="{% static 'css/indexbar.css' %}">
+      <link rel="stylesheet" type="text/css" href="{% static 'css/bar.css' %}">
   </head>
 
 
@@ -26,57 +28,108 @@ function drop(ev) {
 
   // if (ev.target.childNodes.length > 0){
   if (ev.target.hasChildNodes()){  
-    alert(ev.target.childNodes.length);
+    alert("plage déjà enregistrée");
   }
   else
   {
-alert(ev.target.childNodes.length);
      ev.preventDefault();
      var data = ev.dataTransfer.getData("text");
      var nodeCopy = document.getElementById(data).cloneNode(true);
      nodeCopy.id = "newId"; /* We cannot use the same ID */
+     nodeCopy.setAttribute('draggable', false);
      ev.target.appendChild(nodeCopy);
-     
      var idDraged = ev.dataTransfer.getData("text");
      var idHost = ev.target.id;
-
-     TransferToFlask(idDraged,idHost);
+     TransferToServer(idDraged,idHost);
   }      
 
 }
 
 
-function TransferToFlask(ed,eb){
+function TransferToServer(ed,eb){
       var xhr = new XMLHttpRequest();
-      xhr.open('POST', '/result');
+      xhr.open('POST', '/saveTask');
+      xhr.onload = function(){
+        var data = this.responseText;
+        //console.log(data);
+      }
+
+      var params =ed+"@"+eb;//cancatenation
+      alert(params);
+      xhr.send(params);
+}
+
+function TransferToServer2(id){
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/deleteTask');
       xhr.onload = function(){
         var data = this.responseText;
         console.log(data)
       }
-      var params ="drg="+ed+"&drp="+eb;//cancatenation
+      var params =ed+"@";//cancatenation
       xhr.send(params);
-
 }
 
-function GetDateTime() {
-    var today = new Date();
-    alert(today.getDate());
-    document.getElementById('total').innerHTML = today.getDate();
+
+
+function putProjectIntoPlage(idPlage, idProject){
+  var nodeHost = document.getElementById(idPlage);
+  var nodeCopy = document.getElementById(idProject).cloneNode(true);
+  nodeCopy.id = "newId";
+  nodeCopy.setAttribute('draggable', false);
+  nodeHost.appendChild(nodeCopy);
+}
+
+function deleteTask(ev,id){
+  ev.preventDefault();
+  var node = document.getElementById(id);
+  if (node.hasChildNodes()){
+    if (confirm('delete this task ?')){
+      node.removeChild(node.firstChild);
+      TransferToServer2(id);
+    }
+  }
+}
+
+function hexColor()
+{
+  var hue = 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')';
+
+  return hue;
 }
 
 
 </script>
 
   <body>
-    <table>
-      <tr>
-      <td width="15%">
-      {% for rou in timetracking %}
-      <div class="row" id={{forloop.counter}}  draggable="true" ondragstart="drag(event)" >
-        <div class="card" style="border-color: #2b2b2b">
-          <div class="card-header" style="background-color: #2b2b2b">{{rou.nom}}</div>
+
+      <div class="topnav">
+          <!-- <a class="active" href="#home">Home</a> -->
+          <!-- <a href="#news">News</a> -->
+          <!-- <a href="#contact">Contact</a> -->
+          <a>
+          {% load staticfiles %}
+          <img src="{% static 'images/logo.jpg' %}" width="40" height="40" align="right"/>
+          </a>
+          <a href="#about"><b>{{myMonth}}</b></a>
+
+      </div>
+
+   
+  <table>
+
+    <tr>
+
+      <td width="15%" rowspan="2" style = "border: 0";>
+      {% for rou in my_Projects %}
+      <div class="row" id={{rou.id}}  draggable="true" ondragstart="drag(event)" >
+        <div class="card" style="border-color: {{my_colors.3}};">
+          <div class="card-header" style="background-color: #eee333 ;">{{rou.nom}}</div>
+          <script>
+            document.getElementById({{rou.id}}).style.color = hexColor();
+          </script>
           <div class="card-main" >
-            <div class="main-description" style="color: #2b2b2b">{{rou.numero}}</div>
+            <div class="main-description" style="color: {{my_colors.3}};">{{rou.numero}}</div>
           </div>
         </div>
       </div>
@@ -84,52 +137,66 @@ function GetDateTime() {
       </td>
 
  
-     <td td width="65%">
-        <div class="container">
-
-
+     <td width="65%" rowspan="2" >
           <div class="row">
-            <div  class="divv1">
-              Semaine 50
-            </div>
-
-            <div class="divv1"> <h3> Lundi </h3> </div>
-            <div class="divv1"> <h3> Mardi </h3></div>
-            <div class="divv1"><h3> Mercredi </h3> </div>
-            <div class="divv1"> <h3> Jeudi </h3></div>
-            <div class="divv1"> <h3> Vendredi </h3></div>
-            <div class="divv1"> <h3> Samedi </h3></div>
-            <div class="divv1"> <h3> Dimanche</h3></div>
-
+            <div class="divWeekDay"> <h5> Mon {{days_of_week.Mon}} </h5> </div>
+            <div class="divWeekDay"> <h5> Tue {{days_of_week.Tue}} </h5></div>
+            <div class="divWeekDay"><h5> Wed {{days_of_week.Wed}} </h5> </div>
+            <div class="divWeekDay"> <h5> Thu {{days_of_week.Thu}} </h5></div>
+            <div class="divWeekDay"> <h5> Fri {{days_of_week.Fri}} </h5></div>
+            <div class="divWeekDay"> <h5> Sat {{days_of_week.Sat}} </h5></div>
+            <div class="divWeekDay"> <h5> Sun {{days_of_week.Sun}}</h5></div>
           </div>
 
 
 
           {% for i in "x"|ljust:"8" %}      
           <div class="row">
-            <div class="divv1" > <h3> plage {{loop.index}}  </h1> </div>
-            <div class="divv1" id=1{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-            <div class="divv1" id=2{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-            <div class="divv1" id=3{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-            <div class="divv1" id=4{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-            <div class="divv1" id=5{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-            <div class="divv1" id=6{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-            <div class="divv1" id=7{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="divv1" id=1{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)" oncontextmenu="deleteTask(event,this.id)"></div>
+            <div class="divv1" id=2{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)" oncontextmenu="deleteTask(event,this.id)"></div>
+            <div class="divv1" id=3{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)" oncontextmenu="deleteTask(event,this.id)"></div>
+            <div class="divv1" id=4{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)" oncontextmenu="deleteTask(event,this.id)"></div>
+            <div class="divv1" id=5{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)" oncontextmenu="deleteTask(event,this.id)"></div>
+            <div class="divv1" id=6{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)" oncontextmenu="deleteTask(event,this.id)"></div>
+            <div class="divv1" id=7{{forloop.counter}} ondrop="drop(event)" ondragover="allowDrop(event)" oncontextmenu="deleteTask(event,this.id)"></div>
           </div>
           {% endfor %}
-        </div>
         </td>
-        </tr>
-      </table>
-
-<a href="#" class="previous">&laquo; Previous</a>
-<a href="#" class="next">Next &raquo;</a>
-
-<a href="#" class="previous round">&#8249;</a>
-<a href="#" class="next round">&#8250;</a>
+        <td >
 
 
+          progression
+              <div class="progress-circle p99" style="height: 100px; width: 100px; outline: solid #000000">
+                <span>10%</span>
+                <div class="left-half-clipper">
+                  <div class="first50-bar"></div>
+                  <div class="value-bar"></div>
+                </div>
+              </div>     
+        </td>
+    </tr>
 
+    <tr >
+        <td >
+                      Bip Ref
+            <progress max="100" value="50">
+                <div class="progress-bar">
+                    <span style="width: 80%;">Progress: 100%</span>
+                </div>
+            </progress>
+        </td>
+    </tr>
+    
+
+
+
+  </table>
+
+      {% for entry in timetracked_projects %}
+        <script type="text/javascript"> 
+            putProjectIntoPlage({{entry.id_seance}}, {{entry.fk_id_project.id}});
+        </script>
+      {% endfor %}
 
   </body>
 </html>

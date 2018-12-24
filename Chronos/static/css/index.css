@@ -1,17 +1,17 @@
 body {
   font-family: 'Open Sans', sans-serif;
   min-height: 9vh;
-  display: flex;
+  /*display: flex;*/
   flex-direction: column;
   align-items: left;
   justify-content: left;
 }
 
 .row {
-  display: flex;
+  display: flex;*/
   justify-content: left;
   align-items: left;
-  padding: 0 25px;
+  padding: 0 0px;
 }
 
 .card {
@@ -19,7 +19,7 @@ body {
   /*height: 80px;         */
                                 
                                 /* Set width of cards */
-  display: flex;                /* Children use Flexbox */
+  /*display: flex;                /* Children use Flexbox */*/
   flex-direction: column;       /* Rotate Axis */
   border: 1px solid #80DEEA;    /* Set up Border */
   border-radius: 4px;           /* Slightly Curve edges */
@@ -28,20 +28,30 @@ body {
 }
 
 .divv1 {
-    width: 10%;
+    width: 12%;
     /*margin: 0;*/
-    /*height: 50px;*/
+    height: 60px;
     /*padding: 0px;*/
-    border: 1px solid #aaaaaa;
-    border-radius: 4px; 
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;             /* Fixes the corners */
-    margin: 0px; 
-    /*align-items: center;*/
-    /*justify-content: center;*/
-    /*border-radius: 4px;  */
-    /*display:inline-block;  */
+    /*border: 1px solid #aaaaaa;*/
+    border-bottom: none;
+    border-top: none;
+    /*border-radius: 4px; */
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    /*overflow: hidden;             /* Fixes the corners */*/
+    margin: 0px;
+}
+
+.divWeekDay {
+    width: 12%;
+    height: 70px;
+    /*border: 1px solid #aaaaaa;*/
+    /*border: 1px solid #aaaaaa;*/
+    /*border-bottom: none;*/
+    border-top: none;
+    background-color: #333;
+    color: white;
+    text-align: center;
 }
 
 .card-header {
@@ -62,11 +72,6 @@ body {
   padding: 5px 0;            /* Add padding to the top/bottom */
 }
 
-.material-icons {
-  font-size: 36px;
-  color: #0097A7;
-  margin-bottom: 5px;
-}
 
 .main-description {
   color: #0097A7;
@@ -76,43 +81,3 @@ body {
 
 /* IDs for additional colors*/
 /* Colors from Google Material Design: https://material.io/guidelines/style/color.html*/
-
-#or-border {
-  border-color: #FFE082;
-}
-
-#or-header {
-  background-color: #FFF8E1;
-  border-color: #FFE082;
-  color: #FFA000;
-}
-
-#or-color {
-  color: #FFA000;
-}
-
-#red-border {
-  border-color: #EF9A9A;
-}
-
-#red-header {
-  background-color: #FFEBEE;
-  border-color: #EF9A9A;
-  color: #D32F2F;
-}
-
-#red-color {
-  color: #D32F2F;
-}
-
-/*#div1 {
-    width: 130px;
-    height: 70px;
-    padding: 0px;
-    border: 1px solid #aaaaaa;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;    
-}*/
