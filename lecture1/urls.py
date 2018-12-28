@@ -18,8 +18,6 @@ from django.urls import include, path
 
 urlpatterns = [
     path("", include("Chronos.urls")),
-    path("timetrack/", include("Chronos.urls")),
-    path("saveTask/", include("Chronos.urls")),	
     path('admin/', admin.site.urls)
 
 ]

@@ -32,9 +32,9 @@ body {
     /*margin: 0;*/
     height: 60px;
     /*padding: 0px;*/
-    /*border: 1px solid #aaaaaa;*/
-    border-bottom: none;
-    border-top: none;
+    border: 1px solid #aaaaaa;
+    border-bottom: 1px solid #aaaaaa;
+    border-top: 1px solid #aaaaaa;
     /*border-radius: 4px; */
     /*display: flex;*/
     /*flex-direction: column;*/
@@ -46,7 +46,7 @@ body {
     width: 12%;
     height: 70px;
     /*border: 1px solid #aaaaaa;*/
-    /*border: 1px solid #aaaaaa;*/
+    border: 1px solid #aaaaaa;
     /*border-bottom: none;*/
     border-top: none;
     background-color: #333;
@@ -55,7 +55,7 @@ body {
 }
 
 .card-header {
-  color: #0097A7;
+  color: #ffffff;
   text-align: center;
   font-size: 12px;
   font-weight: 600;

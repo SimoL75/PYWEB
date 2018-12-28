@@ -3,48 +3,151 @@ from django.http import HttpResponse, Http404, HttpRequest
 from django.template import RequestContext
 from datetime import date, timedelta, datetime
 from .models import User, Project, timetracking
-import json
+from django.contrib.auth import authenticate, login, logout
+import random
 
-def index(request):
+def index(request):   
 	return render(request,'hello.html')
 
 
 def timetrack(request):
-    try:
-        # matricule = request.POST["matricule"]
-        # password = request.POST["password"]
-        matricule = "X124106"
-        password = "1234" 
-        user = User.objects.get(matricule = matricule, password = password)
-    except User.DoesNotExist:
-        raise Http404("Error 404")
 
-    myDay = datetime.now()
-    myMonth = datetime.today().strftime('%m - %Y')
-    myWeek = myDay.isocalendar()[1]
+    if 'user' not in request.session:
+
+        try:
+            matricule = request.POST["matricule"]
+            password = request.POST["password"]
+            matricule = "X124106"
+            password = "1234" 
+            user = User.objects.get(matricule = matricule, password = password)
+
+        except User.DoesNotExist:
+            raise Http404("Error 404")
+            
+        request.session['user'] = user.id
+        request.session['day'] = datetime.now().strftime('%d/%m/%Y')
+        request.session['week'] = datetime.now().isocalendar()[1]
+    else:
+        user = User.objects.get(id = request.session.get('user'))
     
-    palette = ["#e60028","#cac843","#9e6aad","#f34400","#003962"]
+    myMonth = datetime.strptime(request.session['day'],  '%d/%m/%Y').strftime('%m - %Y')
+    myWeek = request.session['week']
+    myYear = int(datetime.strptime(request.session['day'], '%d/%m/%Y').strftime('%Y'))
+
+##    request.session['day'] = datetime.now()
+#    request.session['week'] = request.session.get('day').isocalendar()[1]
+    
     myProjects = user.projects.all()
-    myTimetrackedProjects = user.timetracked_projects.all()
-    context = {"my_Projects" : myProjects, 
+    dic = {}
+    for o in myProjects:
+    #for idx, val in enumerate(myProjects):
+        item = {o:"#{:06x}".format(random.randint(0,0xFFFFFF))}
+        dic.update(item)
+    myTimetrackedProjects = user.timetracked_projects.filter(id_week = request.session.get('week'))
+    #palette = {1: "#003962",2 :"#cac843",3 :"#9e6aad", 4 : "#f34400"}
+    palette = ["#003962","#cac843","#9e6aad","#f34400", "#f34400"]
+    context = {"my_Projects" : dic, 
     			"timetracked_projects" : myTimetrackedProjects,
     			"my_colors" : palette,
               "myMonth" : myMonth,
-              "days_of_week" : foo(2018,myWeek)}
+              "days_of_week" : myWeekDays(myYear,myWeek)}
+
+
     return render(request,'index.html', context)
 
 def saveTask(request):
-	# if HttpRequest.is_ajax():
-	print('moimoi')
-	print(request.data)
-		#print(Drag_Drop_event)
-	
-	return render(request,'index.html')
-    	#print(Drag_Drop_event)
+    if request.method == 'POST':
+        idProject = request.POST['idProject']
+        idPlage = request.POST['idPlage']
+        timetrackedProject =  Project.objects.get(id = idProject)
+        user = User.objects.get(id = request.session.get('user'))
+        myDay = datetime.now()
+        myWeek = request.session.get('week')
+        new_entry = timetracking.objects.create(id_seance=idPlage,id_week=myWeek,id_year=2018,fk_id_user=user,fk_id_project=timetrackedProject)
+        new_entry.save()
+
+    return render(request,'index.html')
+
+def deleteTask(request):
+    if request.method == 'POST':
+        user = User.objects.get(id = request.session.get('user'))
+        idPlage = request.POST['idPlage']
+        myDay = datetime.now()
+        myWeek = request.session.get('week')        
+        myTimetrackedProjects = user.timetracked_projects.get(id_seance=idPlage,id_week=myWeek,id_year=2018)
+        myTimetrackedProjects.delete()
+
+    return render(request,'index.html')
+
+def previous(request):
+    if request.method == 'POST':
+        user = User.objects.get(id = request.session.get('user'))
+
+        myDay =  datetime.strptime(request.session['day'],  '%d/%m/%Y')
+        myDay = myDay - timedelta(days = 7)
+        request.session['day'] = myDay.strftime('%d/%m/%Y')
+        request.session['week']  = myDay.isocalendar()[1]
+
+        myMonth = myDay.strftime('%m - %Y')
+        myWeek =  request.session['week']
+        myYear = int(datetime.strptime(request.session['day'], '%d/%m/%Y').strftime('%Y'))
+    
+        myProjects = user.projects.all()
+        dic = {}
+        for o in myProjects:
+            item = {o:"#{:06x}".format(random.randint(0,0xFFFFFF))}
+            dic.update(item)       
+        myTimetrackedProjects = user.timetracked_projects.filter(id_week = myWeek,id_year = myYear)
+        
+        print(request.session.get('week'))
+        
+        palette = {1: "#003962",2 :"#cac843",3 :"#9e6aad", 4 : "#f34400"}
+        context = {"my_Projects" : dic, 
+        			"timetracked_projects" : myTimetrackedProjects,
+        			"my_colors" : palette,
+                  "myMonth" : myMonth,
+                  "days_of_week" : myWeekDays(myYear,myWeek)}
+    
+    
+        return render(request,'index.html', context)
 
 
+def next(request):
+    
+    if request.method == 'POST':
 
-def foo(year, week):
+        user = User.objects.get(id = request.session.get('user'))
+        myDay =  datetime.strptime(request.session['day'],  '%d/%m/%Y')
+        myDay = myDay + timedelta(days = 7)
+        request.session['day'] = myDay.strftime('%d/%m/%Y')
+        request.session['week']  = myDay.isocalendar()[1]
+        myMonth = myDay.strftime('%m - %Y')
+        myWeek =  request.session['week']
+        myYear = int(datetime.strptime(request.session['day'], '%d/%m/%Y').strftime('%Y'))
+
+    
+        myProjects = user.projects.all()
+        dic = {}
+        for o in myProjects:
+            item = {o:"#{:06x}".format(random.randint(0,0xFFFFFF))}
+            dic.update(item)        
+        myTimetrackedProjects = user.timetracked_projects.filter(id_week = myWeek, id_year = myYear)
+        
+        
+        palette = {1: "#003962",2 :"#cac843",3 :"#9e6aad", 4 : "#f34400"}
+        #palette = ["#003962","#cac843","#9e6aad","#f34400"]
+
+        context = {"my_Projects" : dic, 
+        			"timetracked_projects" : myTimetrackedProjects,
+        			"my_colors" : palette,
+                  "myMonth" : myMonth,
+                  "days_of_week" : myWeekDays(myYear,myWeek)}
+    
+    
+        return render(request,'index.html', context)
+
+
+def myWeekDays(year, week):
     d = date(year,1,1)
     d = d - timedelta(d.weekday())
     dlt = timedelta(days = (week-1)*7)

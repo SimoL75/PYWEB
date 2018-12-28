@@ -11,9 +11,13 @@
       <link rel="stylesheet" type="text/css" href="{% static 'css/index2.css' %}">
       <link rel="stylesheet" type="text/css" href="{% static 'css/indexbar.css' %}">
       <link rel="stylesheet" type="text/css" href="{% static 'css/bar.css' %}">
+      <!-- <link type="text/javascript" href="{% static 'js/jquery-3.3.1.min.js' %}"> -->
+
+
   </head>
 
-
+<script type="text/javascript"  src="{% static 'js/jquery-3.3.1.min.js' %}">
+</script> 
 
 <script type=text/javascript>
 function allowDrop(ev) {
@@ -40,7 +44,7 @@ function drop(ev) {
      ev.target.appendChild(nodeCopy);
      var idDraged = ev.dataTransfer.getData("text");
      var idHost = ev.target.id;
-     TransferToServer(idDraged,idHost);
+     TransferToServerrr(idDraged,idHost);
   }      
 
 }
@@ -59,16 +63,35 @@ function TransferToServer(ed,eb){
       xhr.send(params);
 }
 
-function TransferToServer2(id){
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', '/deleteTask');
-      xhr.onload = function(){
-        var data = this.responseText;
-        console.log(data)
-      }
-      var params =ed+"@";//cancatenation
-      xhr.send(params);
+function TransferToServerrr(ed,eb){
+$.ajax({
+  type:'POST',
+  url:'/saveTask',
+  data:{
+    idProject:ed,
+    idPlage:eb
+  },
+  success:function(){
+    // alert("created success");
+
+  }
+});
 }
+
+function TransferToServer2(ed){
+$.ajax({
+  type:'POST',
+  url:'/deleteTask',
+  data:{
+    idPlage:ed
+  },
+  success:function(){
+    // alert("created success");
+
+  }
+});
+}
+
 
 
 
@@ -98,8 +121,68 @@ function hexColor()
   return hue;
 }
 
+function previous()
+{
+  alert();
+$.ajax({
+  type:'POST',
+  url:'/previous',
+}); 
+}
+
+function next()
+{
+  alert();
+$.ajax({
+  type:'POST',
+  url:'/next',
+}); 
+}
+
 
 </script>
+
+<script type="text/javascript">
+//
+// Description: Randomly change background color every 5 seconds
+//
+// NewcWare 1997
+// Author: Scott Newcomer 3/1997
+// Email: nuke@bright.net
+//
+function setbackground()
+{
+window.setTimeout( "setbackground()", 5000); // 5000 milliseconds delay
+
+var index = Math.round(Math.random() * 9);
+
+var ColorValue = "FFFFFF"; // default color - white (index = 0)
+
+if(index == 1)
+ColorValue = "FFCCCC"; //peach
+if(index == 2)
+ColorValue = "CCAFFF"; //violet
+if(index == 3)
+ColorValue = "A6BEFF"; //lt blue
+if(index == 4)
+ColorValue = "99FFFF"; //cyan
+if(index == 5)
+ColorValue = "D5CCBB"; //tan
+if(index == 6)
+ColorValue = "99FF99"; //lt green
+if(index == 7)
+ColorValue = "FFFF99"; //lt yellow
+if(index == 8)
+ColorValue = "FFCC99"; //lt orange
+if(index == 9)
+ColorValue = "CCCCCC"; //lt grey
+
+document.getElementsByTagName("body")[0].style.backgroundColor = "#" + ColorValue;
+return("#" + ColorValue);
+
+}
+</script>
+<body onload="setbackground();">
 
   <body>
 
@@ -113,6 +196,17 @@ function hexColor()
           </a>
           <a href="#about"><b>{{myMonth}}</b></a>
 
+
+          <a>
+          <form id="previous" action="{% url 'previous' %}" method="post">
+            <button  class="btn btn-primary">&laquo;</button>
+          </form>
+          </a>
+          <a>                     
+          <form id="next" action="{% url 'next' %}" method="post">
+            <button  class="btn btn-primary">&raquo;</button>
+          </form>
+          </a>     
       </div>
 
    
@@ -121,18 +215,17 @@ function hexColor()
     <tr>
 
       <td width="15%" rowspan="2" style = "border: 0";>
-      {% for rou in my_Projects %}
-      <div class="row" id={{rou.id}}  draggable="true" ondragstart="drag(event)" >
-        <div class="card" style="border-color: {{my_colors.3}};">
-          <div class="card-header" style="background-color: #eee333 ;">{{rou.nom}}</div>
-          <script>
-            document.getElementById({{rou.id}}).style.color = hexColor();
-          </script>
+      {% for prj, col in my_Projects.items %}
+        {% with forloop.counter as outer_counter %}
+      <div class="row" id={{prj.id}}  draggable="true" ondragstart="drag(event)" >
+        <div class="card" style="border-color: {{ col }};">
+          <div class="card-header" style="background-color: {{ col }};">{{prj.nom}}</div>
           <div class="card-main" >
-            <div class="main-description" style="color: {{my_colors.3}};">{{rou.numero}}</div>
+            <div class="main-description" style="color: {{ col }};">{{prj.numero}}</div>
           </div>
         </div>
       </div>
+        {% endwith %}
       {% endfor %}
       </td>
 
@@ -166,13 +259,40 @@ function hexColor()
 
 
           progression
-              <div class="progress-circle p99" style="height: 100px; width: 100px; outline: solid #000000">
+<!--               <div class="progress-circle p99" style="height: 100px; width: 100px; outline: solid #000000">
                 <span>10%</span>
                 <div class="left-half-clipper">
                   <div class="first50-bar"></div>
                   <div class="value-bar"></div>
                 </div>
-              </div>     
+              </div> -->
+<div class="header">
+  <h1 class="title">Pure Css Circular Progress</h1>
+</div>
+
+<div class="content">
+  <div class="group">
+    <div class="circular-progress60"></div>
+    <div class="circular-text">HTML</div>
+  </div>
+  
+  <div class="group">
+    <div class="circular-progress85"></div>
+    <div class="circular-text">HTML</div>
+  </div>
+  
+  <div class="group">
+    <div class="circular-progress100"></div>
+    <div class="circular-text">HTML</div>
+  </div>
+  
+  
+</div>
+
+
+<div id="footer">
+  <a href="https://twitter.com/ray102467" target="_blank" class="twitter">@RayLin</a>
+</div>
         </td>
     </tr>
 
@@ -191,12 +311,12 @@ function hexColor()
 
 
   </table>
-
+{% if timetracked_projects %}
       {% for entry in timetracked_projects %}
         <script type="text/javascript"> 
             putProjectIntoPlage({{entry.id_seance}}, {{entry.fk_id_project.id}});
         </script>
       {% endfor %}
-
+{% endif %}
   </body>
 </html>
