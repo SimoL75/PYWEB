@@ -9,14 +9,17 @@ body {
 
 .row {
   display: flex;*/
-  justify-content: left;
-  align-items: left;
+  justify-content: center;
+  align-items: center;
   padding: 0 0px;
+/*height: 100%;*/
+/*position: absolute;*/
+
 }
 
 .card {
-  width: 150px;
-  /*height: 80px;         */
+  width: 80%;
+  height: 50px;
                                 
                                 /* Set width of cards */
   /*display: flex;                /* Children use Flexbox */*/
@@ -24,34 +27,50 @@ body {
   border: 1px solid #80DEEA;    /* Set up Border */
   border-radius: 4px;           /* Slightly Curve edges */
   overflow: hidden;             /* Fixes the corners */
-  margin: 0px;                  /* Add space between cards */
+  margin: 0px;
+  display:inline-block;
+  float: center;       
+  margin-left: auto;
+  margin-right: auto;           /* Add space between cards */
 }
 
 .divv1 {
-    width: 12%;
+    width: 15%;
     /*margin: 0;*/
     height: 60px;
     /*padding: 0px;*/
     border: 1px solid #aaaaaa;
     border-bottom: 1px solid #aaaaaa;
     border-top: 1px solid #aaaaaa;
+    /*white-space: nowrap;*/
     /*border-radius: 4px; */
     /*display: flex;*/
-    /*flex-direction: column;*/
+    flex-direction: row;
     /*overflow: hidden;             /* Fixes the corners */*/
-    margin: 0px;
+    /*margin: 0px;*/
+    /*display:inline-block;*/
+
+  overflow: hidden;
+position: relative;
+flex-direction: column;
+/*height: 100%;*/
+/*position: absolute;*/
 }
 
 .divWeekDay {
-    width: 12%;
-    height: 70px;
+    width: 15%;
+    height: 50px;
     /*border: 1px solid #aaaaaa;*/
-    border: 1px solid #aaaaaa;
+    /*border: 1px solid #aaaaaa;*/
     /*border-bottom: none;*/
     border-top: none;
-    background-color: #333;
-    color: white;
+    background-color: #666;
+    color: #ffffff;
     text-align: center;
+    overflow:auto; 
+    
+
+    /*border-radius: 5px 5px 0px 0px;*/
 }
 
 .card-header {
@@ -62,6 +81,10 @@ body {
   border-bottom: 1px solid #80DEEA;
   background-color: #E0F7FA;
   padding: 5px 10px;
+  height: 40%;
+  font-size: xx-small;
+    /*font-size: 16px; */
+    /*font-size: 4vw;*/
 }
 
 .card-main {
@@ -69,8 +92,11 @@ body {
   flex-direction: column;     /* Rotate Axis to Vertical */
   justify-content: left;    /* Group Children in Center */
   align-items: left;        /* Group Children in Center (on cross axis) */
-  padding: 5px 0;            /* Add padding to the top/bottom */
+  padding: 5px 0;
+  
+         /* Add padding to the top/bottom */
 }
+
 
 
 .main-description {
